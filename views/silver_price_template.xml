@@ -1,0 +1,98 @@
+<odoo>
+  <template id="page_template" name="Silver Price Page">
+    <t t-call="website.layout">
+      <div class="container mt-3 mb-4">
+
+        <t t-foreach="sections" t-as="section">
+          <div class="card mb-3 shadow-sm">
+            <div class="card-header bg-primary text-white fw-bold text-center">
+              <t t-esc="section['title']"/>
+            </div>
+
+            <div class="card-body p-0">
+              <table class="table table-bordered mb-0 align-middle w-100" style="table-layout: fixed;">
+                <thead class="table-light">
+                  <tr>
+                    <th style="width: 50%;">Tên sản phẩm</th>
+                    <th style="width: 25%;" class="text-center">Giá bán (VNĐ)</th>
+                    <th style="width: 25%;" class="text-center">Giá mua (VNĐ)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <t t-foreach="section['items']" t-as="item">
+                    <tr>
+                      <td style="white-space: normal; word-break: break-word;">
+                        <t t-esc="item['name']"/>
+                      </td>
+                      <td class="text-end text-success">
+                        <t t-esc="item['sell']"/>
+                      </td>
+                      <td class="text-end text-danger">
+                        <t t-esc="item['buy']"/>
+                      </td>
+                    </tr>
+                  </t>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </t>
+
+        <div class="text-center mt-4 small">
+          <t t-if="last_update">
+            <p><strong>Cập nhật lần cuối:</strong> <t t-esc="last_update"/></p>
+          </t>
+          <t t-if="vat_note">
+            <p><t t-esc="vat_note"/></p>
+          </t>
+          <t t-if="hotline">
+            <p><strong><t t-esc="hotline"/></strong></p>
+          </t>
+        </div>
+      </div>
+
+      <!-- ✅ CSS inline cho font Montserrat + responsive -->
+      <style>
+        /* Import font Montserrat từ Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&amp;display=swap');
+
+        /* Áp dụng font cho toàn trang */
+        body, .container, .table, .card, h2, th, td, p {
+          font-family: 'Montserrat', sans-serif !important;
+        }
+
+        /* Mặc định desktop */
+        .table th, .table td {
+          font-size: 16px;
+          padding: 10px;
+        }
+        h2.text-center {
+          font-size: 22px;
+          font-weight: 600;
+        }
+        .card-header {
+          font-weight: 600;
+        }
+
+        /* Mobile: co chữ và giảm khoảng cách */
+        @media (max-width: 768px) {
+          h2.text-center {
+            font-size: 16px;
+          }
+          .card-header {
+            font-size: 13px;
+            padding: 6px;
+          }
+          .table th, .table td {
+            font-size: 11px !important;
+            padding: 4px !important;
+          }
+          .container {
+            padding-left: 6px !important;
+            padding-right: 6px !important;
+          }
+        }
+      </style>
+    </t>
+  </template>
+</odoo>
