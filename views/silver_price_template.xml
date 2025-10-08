@@ -2,6 +2,7 @@
   <template id="page_template" name="Silver Price Page">
     <t t-call="website.layout">
       <div class="container mt-3 mb-4">
+        <h2 class="text-center mb-3">Bảng giá bạc</h2>
 
         <t t-foreach="sections" t-as="section">
           <div class="card mb-3 shadow-sm">
@@ -91,6 +92,9 @@
             padding-right: 6px !important;
           }
         }
+
+        .text-success { color: #28a745 !important; }
+        .text-danger { color: #dc3545 !important; }
       </style>
     </t>
   </template>
