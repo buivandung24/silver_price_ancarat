@@ -14,7 +14,7 @@ class SilverPriceController(http.Controller):
         hotline = ""
 
         try:
-            response = requests.get(api_url, timeout=5)
+            response = requests.get(api_url, timeout=300)
             if response.status_code == 200:
                 data = response.json()
 
@@ -43,8 +43,8 @@ class SilverPriceController(http.Controller):
                         }
                         sections.append(current_section)
 
-                    elif len(row) == 3 and current_section:
-                        name, sell, buy = row
+                    elif len(row) >= 3 and current_section:
+                        name, sell, buy, *_ = row + [None] * (3 - len(row))
                         # bỏ qua dòng trống
                         if not name and not sell and not buy:
                             continue
