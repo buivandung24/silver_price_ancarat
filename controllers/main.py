@@ -35,6 +35,10 @@ class SilverPriceController(http.Controller):
 
                 # Xử lý dữ liệu chính
                 for row in data:
+                    if len(row) > 3:
+                        # loại bỏ cột 4 và 5
+                        row = row[:3]
+
                     if len(row) == 1 and row[0]:
                         # tiêu đề nhóm
                         current_section = {
@@ -42,9 +46,15 @@ class SilverPriceController(http.Controller):
                             'items': []
                         }
                         sections.append(current_section)
-
-                    elif len(row) >= 3 and current_section:
-                        name, sell, buy, *_ = row + [None] * (3 - len(row))
+                    elif row[0] and row[1] == "" and row[2] == "":
+                        # tiêu đề nhóm
+                        current_section = {
+                            'title': row[0],
+                            'items': []
+                        }
+                        sections.append(current_section)
+                    elif current_section:
+                        name, sell, buy = row
                         # bỏ qua dòng trống
                         if not name and not sell and not buy:
                             continue
