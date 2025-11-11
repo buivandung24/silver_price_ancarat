@@ -6,7 +6,8 @@ class SilverPriceController(http.Controller):
 
     @http.route('/banggia', type='http', auth='public', website=True)
     def silver_price(self, **kw):
-        api_url = "https://giabac.ancarat.com/api/price-data"
+        api_url_silver = "https://giabac.ancarat.com/api/price-data"
+        api_url_gold = "https://giavang.ancarat.com/api/price-data"
         sections = []
         current_section = None
         last_update = ""
@@ -14,24 +15,32 @@ class SilverPriceController(http.Controller):
         hotline = ""
 
         try:
-            response = requests.get(api_url, timeout=300)
-            if response.status_code == 200:
-                data = response.json()
+            response_silver = requests.get(api_url_silver, timeout=300)
+            response_gold = requests.get(api_url_gold, timeout=300)
+
+            if response_silver.status_code == 200 and response_gold.status_code == 200:
+                data_silver = response_silver.json()
+                data_gold = response_gold.json()
 
                 # Tách phần cuối của API (3 dòng meta)
-                if len(data) >= 3:
-                    meta = data[-3:]
-                    data = data[:-3]  # bỏ 3 dòng cuối khỏi phần sản phẩm
+                meta = data_silver[-3:]
+                data_silver = data_silver[:-3]  # bỏ 3 dòng cuối khỏi phần sản phẩm
+                data_gold = data_gold[:-3]
 
-                    # Dòng thời gian
-                    if len(meta[0]) >= 3 and meta[0][2]:
-                        last_update = meta[0][2]
-                    # Dòng ghi chú thuế
-                    if len(meta[1]) >= 1:
-                        vat_note = meta[1][0]
-                    # Dòng hotline
-                    if len(meta[2]) >= 1:
-                        hotline = meta[2][0]
+                # Dòng thời gian
+                if len(meta[0]) >= 3 and meta[0][2]:
+                    last_update = meta[0][2]
+                # Dòng ghi chú thuế
+                if len(meta[1]) >= 1:
+                    vat_note = meta[1][0]
+                # Dòng hotline
+                if len(meta[2]) >= 1:
+                    hotline = meta[2][0]
+
+                # nối chuỗi JSON
+                data = []
+                data.extend(data_gold)
+                data.extend(data_silver)
 
                 # Xử lý dữ liệu chính
                 for row in data:
@@ -76,3 +85,20 @@ class SilverPriceController(http.Controller):
             'vat_note': vat_note,
             'hotline': hotline
         })
+    
+    def data_and_meta_processing(data):
+        # Tách phần cuối của API (3 dòng meta)
+        if len(data) >= 3:
+            meta = data[-3:]
+            data = data[:-3]  # bỏ 3 dòng cuối khỏi phần sản phẩm
+
+            # Dòng thời gian
+            if len(meta[0]) >= 3 and meta[0][2]:
+                last_update = meta[0][2]
+            # Dòng ghi chú thuế
+            if len(meta[1]) >= 1:
+                vat_note = meta[1][0]
+            # Dòng hotline
+            if len(meta[2]) >= 1:
+                hotline = meta[2][0]
+        return data
